@@ -50,19 +50,37 @@ module.exports = function (platform, extraOptions) {
     }[context.electronPlatformName]
 
     const IS_LINUX = context.electronPlatformName === 'linux'
-    const executableName = IS_LINUX
-      ? context.packager.appInfo.productFilename.toLowerCase().replace('-dev', '')
+    let executableName = IS_LINUX
+      ? (context.packager.executableName || context.packager.appInfo.productFilename.toLowerCase().replace('-dev', '').replace(/\s+/g, '-'))
       : context.packager.appInfo.productFilename
 
-    const electronBinaryPath = path.join(
+    let electronBinaryPath = path.join(
       context.appOutDir,
       `${executableName}${ext}`
     )
 
-    await flipFuses(electronBinaryPath, {
-      version: FuseVersion.V1,
-      [FuseV1Options.GrantFileProtocolExtraPrivileges]: false
-    })
+    const fs = require('fs')
+    if (!fs.existsSync(electronBinaryPath)) {
+      const altNames = [
+        context.packager.appInfo.name,
+        context.packager.appInfo.productFilename.toLowerCase().replace(/\s+/g, '-'),
+        context.packager.appInfo.productFilename
+      ]
+      for (const name of altNames) {
+        const testPath = path.join(context.appOutDir, `${name}${ext}`)
+        if (fs.existsSync(testPath)) {
+          electronBinaryPath = testPath
+          break
+        }
+      }
+    }
+
+    if (fs.existsSync(electronBinaryPath)) {
+      await flipFuses(electronBinaryPath, {
+        version: FuseVersion.V1,
+        [FuseV1Options.GrantFileProtocolExtraPrivileges]: false
+      })
+    }
   }
 
   const options = {
