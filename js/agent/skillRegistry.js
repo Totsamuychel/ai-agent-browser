@@ -10,6 +10,10 @@ var typeText = require('agent/skills/typeText.js')
 var navigate = require('agent/skills/navigate.js')
 var scrollPage = require('agent/skills/scrollPage.js')
 var getPageInfo = require('agent/skills/getPageInfo.js')
+var searchWeb = require('agent/skills/searchWeb.js')
+var fetchPageContent = require('agent/skills/fetchPageContent.js')
+var deepResearch = require('agent/skills/deepResearch.js')
+var manageTabs = require('agent/skills/manageTabs.js')
 
 var skills = {}
 
@@ -50,6 +54,10 @@ register(typeText)
 register(navigate)
 register(scrollPage)
 register(getPageInfo)
+register(searchWeb)
+register(fetchPageContent)
+register(deepResearch)
+register(manageTabs)
 
 module.exports = {
   register,

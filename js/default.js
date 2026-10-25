@@ -183,14 +183,66 @@ require('searchbar/historyViewer.js').initialize()
 require('searchbar/developmentModeNotification.js').initialize()
 require('searchbar/shortcutButtons.js').initialize()
 require('searchbar/calculatorPlugin.js').initialize()
+require('searchbar/aiSearchbarPlugin.js').initialize()
 
-// AI Agent sidebar
+// AI Agent components
 var aiSidebar = require('agent/sidebar.js')
 aiSidebar.initialize()
+
+var ntpAiHub = require('agent/ntpAiHub.js')
+ntpAiHub.initialize()
 
 // Toggle AI sidebar with button
 document.getElementById('ai-toggle-button').addEventListener('click', function () {
   aiSidebar.toggle()
+})
+
+// Quick Actions Menu button
+var remoteMenu = require('remoteMenuRenderer.js')
+document.getElementById('ai-quick-btn').addEventListener('click', function () {
+  var rect = document.getElementById('ai-quick-btn').getBoundingClientRect()
+  remoteMenu.open([
+    [
+      {
+        label: '📝 Суммаризировать текущую вкладку',
+        click: function () {
+          var tab = tabs.get(tabs.getSelected())
+          var title = tab ? (tab.title || tab.url) : 'эту страницу'
+          aiSidebar.ask('Прочитай и подробно суммаризируй текущую вкладку ("' + title + '"). Выдели 4-6 ключевых тезисов и выводов.')
+        }
+      },
+      {
+        label: '🔬 Запустить Deep Research по теме вкладки',
+        click: function () {
+          var tab = tabs.get(tabs.getSelected())
+          var topic = tab ? (tab.title || tab.url) : 'этой теме'
+          aiSidebar.ask('Проведи глубокое исследование (Deep Research) в интернете по теме текущей страницы: "' + topic + '" с привлечением нескольких источников.')
+        }
+      },
+      {
+        label: '📑 Анализ всех открытых вкладок',
+        click: function () {
+          aiSidebar.ask('Проанализируй список всех открытых вкладок и дай сводную информацию.')
+        }
+      }
+    ],
+    [
+      {
+        label: '🌐 Найти свежие новости по теме',
+        click: function () {
+          var tab = tabs.get(tabs.getSelected())
+          var topic = tab ? (tab.title || tab.url) : ''
+          aiSidebar.ask('Найди самые свежие новости в интернете по теме: "' + topic + '" и дай ссылки на источники.')
+        }
+      },
+      {
+        label: '💬 Открыть диалог с ИИ',
+        click: function () {
+          aiSidebar.open()
+        }
+      }
+    ]
+  ], Math.round(rect.left), Math.round(rect.bottom))
 })
 
 // Keyboard shortcut: Ctrl+Shift+A to toggle AI sidebar

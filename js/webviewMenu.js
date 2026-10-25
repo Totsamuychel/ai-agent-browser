@@ -159,6 +159,7 @@ const webviewMenu = {
     var selection = data.selectionText
 
     if (selection) {
+      var aiSidebar = require('agent/sidebar.js')
       var textActions = [
         {
           label: l('searchWith').replace('%s', searchEngine.getCurrent().name),
@@ -172,9 +173,49 @@ const webviewMenu = {
               openInBackground: false
             })
           }
+        },
+        {
+          label: '🤖 Спросить ИИ об этом',
+          click: function () {
+            aiSidebar.ask('Объясни и ответь подробно по поводу этого фрагмента текста:\n\n"' + selection + '"')
+          }
+        },
+        {
+          label: '🔬 Deep Research по этой теме',
+          click: function () {
+            aiSidebar.ask('Сделай глубокое исследование (Deep Research) в интернете по теме:\n\n"' + selection + '"')
+          }
+        },
+        {
+          label: '📝 Суммаризировать выделенное',
+          click: function () {
+            aiSidebar.ask('Кратко суммаризируй следующий текст:\n\n"' + selection + '"')
+          }
         }
       ]
       menuSections.push(textActions)
+    }
+
+    if (!selection && !link && !mediaURL) {
+      var aiSidebarRef = require('agent/sidebar.js')
+      menuSections.push([
+        {
+          label: '🤖 Суммаризировать эту страницу',
+          click: function () {
+            var tab = tabs.get(tabs.getSelected())
+            var title = tab ? (tab.title || tab.url) : 'эту страницу'
+            aiSidebarRef.ask('Прочитай и подробно суммаризируй текущую страницу ("' + title + '"). Выдели главные мысли, выводы и ключевые факты.')
+          }
+        },
+        {
+          label: '🔬 Deep Research по теме страницы',
+          click: function () {
+            var tab = tabs.get(tabs.getSelected())
+            var topic = tab ? (tab.title || tab.url) : 'этой темы'
+            aiSidebarRef.ask('Проведи Deep Research в интернете по теме текущей страницы: "' + topic + '" с привлечением дополнительных источников.')
+          }
+        }
+      ])
     }
 
     var clipboardActions = []

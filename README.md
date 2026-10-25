@@ -1,35 +1,45 @@
-# 🤖 AI Agent Browser
+# 🤖 Comet AI Browser
 
-An AI-powered web browser with a built-in agent that can navigate, read, click, and fill forms on web pages. Based on [Min Browser](https://github.com/minbrowser/min).
+An advanced AI-powered web browser with built-in agentic intelligence, real-time web search, multi-source Deep Research, and page automation. Based on [Min Browser](https://github.com/minbrowser/min).
 
-## Features
+## 🚀 Key Features
 
-- **🧠 Built-in AI Agent** — Chat with an AI assistant that can control your browser
-- **🔧 Modular Skills System** — Easily add new capabilities to the agent
-- **🏠 Local LLM Support** — Works with [Ollama](https://ollama.ai/) (Qwen 2.5, Llama 3.1, etc.)
-- **☁️ Cloud API Support** — OpenAI, Anthropic Claude, Google Gemini, or any OpenAI-compatible API
-- **🔒 Privacy First** — Your data stays on your machine when using local models
+- **🧠 Deeply Integrated AI Agent** — Embedded assistant that controls your browser, navigates tabs, fills forms, and extracts data.
+- **🌐 Live Web Search & Scraping** — Autonomous web searching via DuckDuckGo without requiring any API keys.
+- **🔬 Deep Research Engine** — Gathers intelligence across 3-5 live sources, parses their content, and synthesizes structured reports with citations.
+- **📑 New Tab AI Hub (Comet / Perplexity style)** — Opening a new tab opens a full-fledged AI search & chat interface.
+- **⚡ Toolbar Quick Actions Menu (`✨`)** — 1-click page summarization, deep research, and cross-tab analysis.
+- **🖱️ Context Menu AI Integration** — Right-click any selection to explain, summarize, or research it with AI.
+- **🔍 Address Bar AI Search** — Type `?query` or `/ai query` in the URL bar for instant AI answers.
+- **🏠 100% Local LLM Support** — Works offline/privately with [Ollama](https://ollama.ai/) (Qwen 2.5, Llama 3.1, DeepSeek).
+- **☁️ Cloud API Support** — Supports OpenAI (GPT-4o), Anthropic Claude, and custom OpenAI-compatible endpoints.
 
-## Agent Skills (MVP)
+---
+
+## 🛠️ Built-in Skills (Tools)
 
 | Skill | Description |
 |-------|-------------|
-| `getPageContent` | Reads text content from the active tab |
-| `getPageInfo` | Lists interactive elements (buttons, links, inputs) on the page |
+| `searchWeb` | Searches the live web using DuckDuckGo, returning titles, links, and snippets |
+| `fetchPageContent` | Background HTTP crawler: parses full readable text from any web URL |
+| `deepResearch` | Autonomous multi-source investigation with citations and source links |
+| `manageTabs` | Cross-tab intelligence: list, switch, close, or summarize all open tabs |
+| `getPageContent` | Reads clean text from the active tab |
+| `getPageInfo` | Extracts interactive elements (buttons, inputs, links) with CSS selectors |
 | `clickElement` | Clicks elements by CSS selector or visible text |
-| `typeText` | Types text into form fields with React/Vue compatibility |
+| `typeText` | Types into inputs with React/Vue synthetic event triggers |
 | `navigate` | Opens URLs in current or new tabs |
-| `scrollPage` | Scrolls pages up/down/top/bottom |
+| `scrollPage` | Smooth page scrolling up, down, top, or bottom |
 
-## Quick Start
+---
 
-### Prerequisites
+## ⚡ Quick Start
 
+### 1. Prerequisites
 - **Node.js** 18+ and **npm**
-- **Ollama** (for local AI): [Install Ollama](https://ollama.ai/download)
+- **Ollama** (for local models): [ollama.ai](https://ollama.ai/)
 
-### Setup
-
+### 2. Installation & Run
 ```bash
 # Clone the repository
 git clone https://github.com/Totsamuychel/ai-agent-browser.git
@@ -38,86 +48,115 @@ cd ai-agent-browser
 # Install dependencies
 npm install
 
-# Pull a model for Ollama (if using local AI)
+# Pull a high-quality model for Ollama (recommended for agentic tasks)
 ollama pull qwen2.5:7b
 
 # Start the browser
 npm start
 ```
 
-### Usage
+---
 
-1. Click the **🤖** button in the toolbar (or press `Ctrl+Shift+A`) to open the AI sidebar
-2. Configure your AI provider in the settings (⚙️ icon):
-   - **Ollama** (default): Runs locally, no API key needed
-   - **OpenAI / Custom**: Enter your API key and endpoint
-3. Type a task in the chat, for example:
-   - "Прочитай текст на этой странице"
-   - "Найди кнопку 'Sign In' и нажми на неё"
-   - "Заполни поле поиска текстом 'AI browser' и нажми Enter"
-   - "Открой новую вкладку с google.com"
+## 💡 How to Use
 
-## Architecture
+### 1. New Tab AI Hub (Perplexity / Comet style)
+Open a new tab to access the AI Hub:
+- **🌐 Web Search Mode:** Ask real-time questions and get answers with clickable source cards.
+- **🔬 Deep Research Mode:** Enter complex questions to have the agent research multiple articles in the background and write a synthesized report.
+- **💬 Chat Mode:** Converse directly with the model.
+
+### 2. AI Sidebar
+Click **🤖** in the toolbar or press `Ctrl+Shift+A` to open the sidebar.
+- Use quick-action chips: `📝 Суммаризировать`, `🔬 Deep Research`, `🌐 Поиск в сети`, `📑 Все вкладки`.
+- Chat and watch the agent's live reasoning, tool executions, and source links.
+
+### 3. Toolbar Quick Actions (`✨`)
+Click the `✨` button in the top right to instantly:
+- Summarize the current page
+- Run Deep Research on the current page's topic
+- Analyze all currently open tabs
+
+### 4. Right-Click Context Menu
+Highlight any text on a page, right-click, and select:
+- `🤖 Спросить ИИ об этом`
+- `🔬 Deep Research по этой теме`
+- `📝 Суммаризировать выделенное`
+
+### 5. Address Bar (Searchbar)
+Type `?` or `/ai` followed by your question:
+```text
+? кто создал linux kernel
+/ai последние новости квантовых вычислений 2026
+```
+
+---
+
+## 🏗️ Architecture
 
 ```
 js/agent/
-├── llmClient.js       # Unified LLM client (Ollama / OpenAI / Custom)
-├── agentLoop.js       # ReAct reasoning loop
-├── skillRegistry.js   # Central skill registry
-├── sidebar.js         # Chat UI sidebar
+├── llmClient.js         # Unified client for Ollama & OpenAI-compatible APIs
+├── agentLoop.js         # ReAct reasoning loop with tool execution
+├── skillRegistry.js     # Central registry of agent capabilities
+├── sidebar.js           # Chat UI with quick chips & markdown citation parser
+├── ntpAiHub.js          # New Tab Page AI Search & Research Hub
 └── skills/
-    ├── getPageContent.js
-    ├── getPageInfo.js
-    ├── clickElement.js
-    ├── typeText.js
-    ├── navigate.js
-    └── scrollPage.js
+    ├── searchWeb.js         # DuckDuckGo live web search
+    ├── fetchPageContent.js  # Background HTML scraper & text extractor
+    ├── deepResearch.js      # Multi-step deep research engine
+    ├── manageTabs.js        # Cross-tab management & intelligence
+    ├── getPageContent.js    # Active tab text extractor
+    ├── getPageInfo.js       # Interactive DOM element analyzer
+    ├── clickElement.js      # Element clicker
+    ├── typeText.js          # Input typing simulator
+    ├── navigate.js          # Navigation & tab creator
+    └── scrollPage.js        # Page scroller
 ```
 
-## Adding Custom Skills
+---
 
-Create a new file in `js/agent/skills/` with this structure:
+## 🔌 Adding Custom Skills
+
+Create a file in `js/agent/skills/mySkill.js`:
 
 ```javascript
 var definition = {
   name: 'mySkill',
-  description: 'What this skill does',
+  description: 'What your skill does',
   parameters: {
     type: 'object',
     properties: {
-      param1: { type: 'string', description: 'Parameter description' }
+      param: { type: 'string', description: 'Parameter description' }
     },
-    required: ['param1']
+    required: ['param']
   }
 }
 
 async function execute(context, args) {
-  // context.activeTabId — current tab ID
-  // args.param1 — parameter value
-  return { result: 'success' }
+  // context.activeTabId — current tab
+  return { result: 'Success with: ' + args.param }
 }
 
 module.exports = { definition, execute }
 ```
 
-Then register it in `js/agent/skillRegistry.js`:
-
+Register it in `js/agent/skillRegistry.js`:
 ```javascript
 var mySkill = require('agent/skills/mySkill.js')
 register(mySkill)
 ```
 
-## Keyboard Shortcuts
+---
+
+## ⌨️ Shortcuts
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Shift+A` | Toggle AI Sidebar |
+| `Ctrl+Shift+A` | Toggle AI Agent Sidebar |
+| `?` in Searchbar | Instant AI Query |
 
-## Credits
+---
 
-- Based on [Min Browser](https://github.com/minbrowser/min) by PalmerAL (Apache 2.0 License)
-- AI integration by [Totsamuychel](https://github.com/Totsamuychel)
+## 📜 License
 
-## License
-
-Apache-2.0 (same as Min Browser)
+Apache-2.0. Based on [Min Browser](https://github.com/minbrowser/min).
