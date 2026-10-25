@@ -73,7 +73,7 @@ if (typeof document !== 'undefined') {
       el.setAttribute('title', str)
       el.setAttribute('aria-label', str)
     } else {
-      throw new Error('invalid data-label value: ' + str)
+      console.warn('invalid data-label value: ' + el.getAttribute('data-label'))
     }
   })
   document.querySelectorAll('[data-value]').forEach(function (el) {
@@ -81,7 +81,7 @@ if (typeof document !== 'undefined') {
     if (typeof str === 'string') {
       el.setAttribute('value', str)
     } else {
-      throw new Error('invalid data-value value: ' + str)
+      console.warn('invalid data-value value: ' + el.getAttribute('data-value'))
     }
   })
 }
