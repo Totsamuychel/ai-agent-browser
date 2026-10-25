@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
 
-    <title>Min</title>
+    <title>AI Agent Browser</title>
 
     <link rel="stylesheet" href="dist/bundle.css" />
     <link rel="stylesheet" href="ext/icons/iconfont.css" />
+    <link rel="stylesheet" href="css/aiSidebar.css" />
   </head>
 
   <body>
@@ -141,6 +142,14 @@
         <div id="tabs-inner" role="tablist" class="has-thin-scrollbar"></div>
       </div>
       <div class="navbar-right-actions">
+        <button
+          id="ai-toggle-button"
+          class="navbar-action-button"
+          data-label="AI Agent"
+          tabindex="-1"
+          title="Toggle AI Agent Sidebar"
+          style="font-size: 16px; padding: 0 6px;"
+        >🤖</button>
         <button
           id="add-tab-button"
           class="navbar-action-button i carbon:add"

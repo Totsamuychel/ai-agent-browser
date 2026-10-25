@@ -184,5 +184,22 @@ require('searchbar/developmentModeNotification.js').initialize()
 require('searchbar/shortcutButtons.js').initialize()
 require('searchbar/calculatorPlugin.js').initialize()
 
+// AI Agent sidebar
+var aiSidebar = require('agent/sidebar.js')
+aiSidebar.initialize()
+
+// Toggle AI sidebar with button
+document.getElementById('ai-toggle-button').addEventListener('click', function () {
+  aiSidebar.toggle()
+})
+
+// Keyboard shortcut: Ctrl+Shift+A to toggle AI sidebar
+document.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+    e.preventDefault()
+    aiSidebar.toggle()
+  }
+})
+
 // once everything's loaded, start the session
 require('sessionRestore.js').restore()
