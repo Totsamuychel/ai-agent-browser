@@ -8,6 +8,22 @@ var settings = require('util/settings/settings.js')
 var DEFAULT_OLLAMA_ENDPOINT = 'http://localhost:11434/v1/chat/completions'
 var DEFAULT_OLLAMA_MODEL = 'qwen2.5:7b'
 
+var POPULAR_LOCAL_MODELS = [
+  { id: 'qwen2.5:7b', name: 'Qwen 2.5 7B (Рекомендуется)' },
+  { id: 'qwen2.5:14b', name: 'Qwen 2.5 14B (Мощная)' },
+  { id: 'llama3.1:8b', name: 'Llama 3.1 8B' },
+  { id: 'deepseek-r1:8b', name: 'DeepSeek R1 8B' },
+  { id: 'mistral:7b', name: 'Mistral 7B' }
+]
+
+var POPULAR_CLOUD_MODELS = [
+  { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Быстрая)' },
+  { id: 'gpt-4o', name: 'GPT-4o (Максимальная точность)' },
+  { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet' },
+  { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash' },
+  { id: 'deepseek-chat', name: 'DeepSeek V3' }
+]
+
 function getConfig () {
   return {
     provider: settings.get('aiProvider') || 'ollama',
@@ -17,6 +33,16 @@ function getConfig () {
     cloudModel: settings.get('aiCloudModel') || 'gpt-4o-mini',
     cloudApiKey: settings.get('aiCloudApiKey') || ''
   }
+}
+
+function saveConfig (updates) {
+  if (!updates) return
+  if (updates.provider !== undefined) settings.set('aiProvider', updates.provider)
+  if (updates.ollamaEndpoint !== undefined) settings.set('aiOllamaEndpoint', updates.ollamaEndpoint)
+  if (updates.ollamaModel !== undefined) settings.set('aiOllamaModel', updates.ollamaModel)
+  if (updates.cloudEndpoint !== undefined) settings.set('aiCloudEndpoint', updates.cloudEndpoint)
+  if (updates.cloudModel !== undefined) settings.set('aiCloudModel', updates.cloudModel)
+  if (updates.cloudApiKey !== undefined) settings.set('aiCloudApiKey', updates.cloudApiKey)
 }
 
 function getEndpoint (config) {
@@ -44,11 +70,26 @@ function getHeaders (config) {
 }
 
 /**
+ * Check Ollama connection status and fetch available models if possible.
+ */
+async function checkOllamaStatus () {
+  var config = getConfig()
+  try {
+    var tagsUrl = config.ollamaEndpoint.replace('/v1/chat/completions', '/api/tags')
+    var res = await fetch(tagsUrl, { signal: AbortSignal.timeout(3000) })
+    if (res.ok) {
+      var data = await res.json()
+      var modelList = (data.models || []).map(function (m) { return m.name })
+      return { online: true, installedModels: modelList }
+    }
+    return { online: false, installedModels: [] }
+  } catch (e) {
+    return { online: false, installedModels: [] }
+  }
+}
+
+/**
  * Send a chat completion request with optional tools.
- * @param {Array} messages - Chat messages array [{role, content}]
- * @param {Array} tools - Array of tool definitions (OpenAI function calling format)
- * @param {Object} options - Additional options (temperature, max_tokens, etc.)
- * @returns {Promise<Object>} - The API response
  */
 async function chatCompletion (messages, tools, options) {
   var config = getConfig()
@@ -88,9 +129,6 @@ async function chatCompletion (messages, tools, options) {
   return await response.json()
 }
 
-/**
- * Extract the assistant message from an API response.
- */
 function getAssistantMessage (response) {
   if (response.choices && response.choices.length > 0) {
     return response.choices[0].message
@@ -98,9 +136,6 @@ function getAssistantMessage (response) {
   return null
 }
 
-/**
- * Check if the response contains tool calls.
- */
 function hasToolCalls (message) {
   return message && message.tool_calls && message.tool_calls.length > 0
 }
@@ -109,5 +144,9 @@ module.exports = {
   chatCompletion,
   getAssistantMessage,
   hasToolCalls,
-  getConfig
+  getConfig,
+  saveConfig,
+  checkOllamaStatus,
+  POPULAR_LOCAL_MODELS,
+  POPULAR_CLOUD_MODELS
 }
